@@ -1,0 +1,38 @@
+/**
+* Basic component of DAG for task generator
+* @author Yunsang Cho
+*/
+target C {
+    timeout: $TIMEOUT$,
+    workers: $NUM_WORKERS$,
+    scheduler: $SCHEDULER_TYPE$
+}
+
+reactor SimpleDagRunner(exe_time:time(200 msec)) {
+
+    $STARTOUTPUT$
+
+    $STARTUPREACTION$
+}
+
+$COMPONENTS$
+
+reactor Component {
+    input in:time;
+    output out:time;
+    
+    reaction(in) -> out {=
+        long long int physical_start_time = lf_time_physical();
+        
+        while (lf_time_physical() < physical_start_time + in->value) {
+
+        }
+        lf_set(out, in->value);
+    =}
+}
+
+main reactor {
+    runner = new SimpleDagRunner(exe_time=$EXE_TIME$);
+
+    $TASKCONFIG$
+}
